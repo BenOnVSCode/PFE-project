@@ -5,6 +5,9 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
+// Force dynamic rendering to prevent SSR issues with router.push
+export const dynamic = 'force-dynamic'
+
 interface User {
   id: string
   name?: string
@@ -124,9 +127,19 @@ export default function Profile() {
     }))
   }
 
+  // Handle redirect in useEffect to avoid SSR issues
+  useEffect(() => {
+    if (!session) {
+      router.push('/auth/signin')
+    }
+  }, [session, router])
+
   if (!session) {
-    router.push('/auth/signin')
-    return null
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      </div>
+    )
   }
 
   if (isLoading) {

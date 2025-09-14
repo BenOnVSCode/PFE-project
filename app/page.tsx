@@ -46,7 +46,7 @@ export default function Home() {
       if (response.ok) {
         const gigsData = await response.json()
         console.log('Gigs data received:', gigsData.length, 'gigs')
-        console.log('Gigs:', gigsData.map(g => ({ id: g.id, title: g.title })))
+        console.log('Gigs:', gigsData.map((g: Gig) => ({ id: g.id, title: g.title })))
         setGigs(gigsData)
       } else {
         console.error('Response not ok:', response.status)

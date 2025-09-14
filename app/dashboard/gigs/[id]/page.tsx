@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
@@ -37,13 +37,7 @@ export default function GigDetails() {
   const [isLoading, setIsLoading] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
 
-  useEffect(() => {
-    if (params.id) {
-      fetchGig()
-    }
-  }, [params.id])
-
-  const fetchGig = async () => {
+  const fetchGig = useCallback(async () => {
     setIsLoading(true)
     try {
       const response = await fetch(`/api/gigs/${params.id}`)
@@ -59,7 +53,13 @@ export default function GigDetails() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [params.id, router])
+
+  useEffect(() => {
+    if (params.id) {
+      fetchGig()
+    }
+  }, [params.id, fetchGig])
 
   const handleApplicationUpdate = async (applicationId: string, status: 'ACCEPTED' | 'REJECTED') => {
     setIsUpdating(true)
