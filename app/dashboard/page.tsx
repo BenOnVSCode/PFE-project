@@ -188,7 +188,7 @@ export default function Dashboard() {
                   <div className="p-5">
                     <div className="flex items-center">
                       <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
+                        <div className="w-8 h-8 bg-emerald-500 rounded-md flex items-center justify-center">
                           <span className="text-white text-sm font-medium">
                             {gigs.filter(gig => gig.status === 'COMPLETED').length}
                           </span>
@@ -311,7 +311,7 @@ export default function Dashboard() {
                   <div className="p-5">
                     <div className="flex items-center">
                       <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-gray-500 rounded-md flex items-center justify-center">
+                        <div className="w-8 h-8 bg-slate-500 rounded-md flex items-center justify-center">
                           <span className="text-white text-sm font-medium">
                             {gigs.filter(gig => gig.status === 'CLOSED').length}
                           </span>
@@ -390,7 +390,7 @@ export default function Dashboard() {
                   <div className="p-5">
                     <div className="flex items-center">
                       <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
+                        <div className="w-8 h-8 bg-emerald-500 rounded-md flex items-center justify-center">
                           <span className="text-white text-sm font-medium">
                             {gigs.filter(gig => gig.status === 'COMPLETED' && gig.applications?.some(app => app.status === 'ACCEPTED')).length}
                           </span>
@@ -537,7 +537,7 @@ export default function Dashboard() {
                   <div className="p-5">
                     <div className="flex items-center">
                       <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-gray-500 rounded-md flex items-center justify-center">
+                        <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
                           <span className="text-white text-sm font-medium">
                             {gigs.filter(gig => gig.status === 'OPEN').length}
                           </span>

@@ -5,6 +5,8 @@ import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import StatusManager from '@/components/StatusManager'
+import ReviewForm from '@/components/ReviewForm'
+import ReviewCard from '@/components/ReviewCard'
 
 interface Application {
   id: string
@@ -18,6 +20,23 @@ interface Application {
   }
 }
 
+interface Review {
+  id: string
+  rating: number
+  comment?: string
+  createdAt: string
+  reviewer: {
+    id: string
+    name?: string
+    image?: string
+  }
+  reviewee: {
+    id: string
+    name?: string
+    image?: string
+  }
+}
+
 interface Gig {
   id: string
   title: string
@@ -28,6 +47,7 @@ interface Gig {
   status: string
   createdAt: string
   applications: Application[]
+  reviews?: Review[]
 }
 
 export default function GigDetails() {
@@ -38,6 +58,9 @@ export default function GigDetails() {
   const [isLoading, setIsLoading] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
+  const [showReviewForm, setShowReviewForm] = useState(false)
+  const [reviews, setReviews] = useState<Review[]>([])
+  const [isLoadingReviews, setIsLoadingReviews] = useState(false)
 
   const fetchGig = useCallback(async () => {
     setIsLoading(true)
@@ -57,11 +80,34 @@ export default function GigDetails() {
     }
   }, [params.id, router])
 
+  const fetchReviews = useCallback(async () => {
+    if (!gig?.id) return
+    
+    setIsLoadingReviews(true)
+    try {
+      const response = await fetch(`/api/reviews?gigId=${gig.id}`)
+      if (response.ok) {
+        const reviewsData = await response.json()
+        setReviews(reviewsData)
+      }
+    } catch (error) {
+      console.error('Failed to fetch reviews:', error)
+    } finally {
+      setIsLoadingReviews(false)
+    }
+  }, [gig?.id])
+
   useEffect(() => {
     if (params.id) {
       fetchGig()
     }
   }, [params.id, fetchGig])
+
+  useEffect(() => {
+    if (gig?.status === 'COMPLETED') {
+      fetchReviews()
+    }
+  }, [gig?.status, fetchReviews])
 
   const handleApplicationUpdate = async (applicationId: string, status: 'ACCEPTED' | 'REJECTED') => {
     setIsUpdating(true)
@@ -108,6 +154,44 @@ export default function GigDetails() {
       alert('Something went wrong')
     } finally {
       setIsUpdatingStatus(false)
+    }
+  }
+
+  const handleReviewSubmit = async (review: { rating: number; comment?: string }) => {
+    if (!gig) return
+
+    // Find the accepted developer to review
+    const acceptedApplication = gig.applications.find(app => app.status === 'ACCEPTED')
+    if (!acceptedApplication) {
+      alert('No accepted developer found for this gig')
+      return
+    }
+
+    try {
+      const response = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          gigId: gig.id,
+          revieweeId: acceptedApplication.author.id,
+          rating: review.rating,
+          comment: review.comment,
+        }),
+      })
+
+      if (response.ok) {
+        setShowReviewForm(false)
+        fetchReviews() // Refresh reviews
+        alert('Review submitted successfully!')
+      } else {
+        const errorData = await response.json()
+        alert(errorData.error || 'Failed to submit review')
+      }
+    } catch (error) {
+      console.error('Failed to submit review:', error)
+      alert('Something went wrong')
     }
   }
 
@@ -404,6 +488,72 @@ export default function GigDetails() {
               </div>
             </div>
           </div>
+
+          {/* Reviews Section for Completed Gigs */}
+          {gig.status === 'COMPLETED' && (
+            <div className="mt-8">
+              <div className="bg-white shadow rounded-lg p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    Reviews ({reviews.length})
+                  </h2>
+                  
+                  {/* Show review button if user hasn't reviewed yet */}
+                  {session?.user.role === 'CLIENT' && 
+                   gig.applications.some(app => app.status === 'ACCEPTED') &&
+                   !reviews.some(review => review.reviewerId === session.user.id) && (
+                    <button
+                      onClick={() => setShowReviewForm(true)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                    >
+                      Write Review
+                    </button>
+                  )}
+                </div>
+
+                {/* Review Form */}
+                {showReviewForm && (
+                  <div className="mb-6">
+                    <ReviewForm
+                      gigId={gig.id}
+                      revieweeId={gig.applications.find(app => app.status === 'ACCEPTED')?.author.id || ''}
+                      revieweeName={gig.applications.find(app => app.status === 'ACCEPTED')?.author.name || 'Developer'}
+                      gigTitle={gig.title}
+                      onSubmit={handleReviewSubmit}
+                      onCancel={() => setShowReviewForm(false)}
+                    />
+                  </div>
+                )}
+
+                {/* Reviews List */}
+                {isLoadingReviews ? (
+                  <div className="flex justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  </div>
+                ) : reviews.length === 0 ? (
+                  <div className="text-center py-8">
+                    <div className="text-gray-400 text-4xl mb-2">⭐</div>
+                    <p className="text-gray-600">No reviews yet</p>
+                    {session?.user.role === 'CLIENT' && (
+                      <p className="text-sm text-gray-500 mt-1">
+                        Be the first to review this project!
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {reviews.map((review) => (
+                      <ReviewCard
+                        key={review.id}
+                        review={review}
+                        showGigTitle={false}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>

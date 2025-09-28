@@ -15,9 +15,9 @@ const statusOptions = [
   { value: 'IN_PROGRESS', label: 'In Progress', color: 'bg-blue-100 text-blue-800', description: 'Work has started' },
   { value: 'ON_HOLD', label: 'On Hold', color: 'bg-orange-100 text-orange-800', description: 'Temporarily paused' },
   { value: 'UNDER_REVIEW', label: 'Under Review', color: 'bg-indigo-100 text-indigo-800', description: 'Being reviewed' },
-  { value: 'COMPLETED', label: 'Completed', color: 'bg-purple-100 text-purple-800', description: 'Work finished' },
+  { value: 'COMPLETED', label: 'Completed', color: 'bg-emerald-100 text-emerald-800', description: 'Work finished' },
   { value: 'CANCELLED', label: 'Cancelled', color: 'bg-red-100 text-red-800', description: 'Project cancelled' },
-  { value: 'CLOSED', label: 'Closed', color: 'bg-gray-100 text-gray-800', description: 'No longer accepting applications' }
+  { value: 'CLOSED', label: 'Closed', color: 'bg-slate-100 text-slate-800', description: 'No longer accepting applications' }
 ]
 
 export default function StatusManager({ currentStatus, gigId, onStatusChange, isLoading = false }: StatusManagerProps) {
