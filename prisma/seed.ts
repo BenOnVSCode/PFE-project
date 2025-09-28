@@ -98,7 +98,7 @@ Please include your portfolio and estimated timeline in your proposal.`,
       budget: '$2,000 - $4,000',
       timeline: '4-6 weeks',
       skills: ['React', 'Node.js', 'MongoDB', 'Stripe API', 'CSS'],
-      status: 'OPEN',
+      status: 'IN_PROGRESS',
       ownerId: client1.id,
     },
   })
@@ -147,7 +147,7 @@ Experience with data visualization libraries and API integrations is essential.`
       budget: '$3,000 - $5,000',
       timeline: '6-8 weeks',
       skills: ['Python', 'Django', 'JavaScript', 'Chart.js', 'PostgreSQL'],
-      status: 'OPEN',
+      status: 'UNDER_REVIEW',
       ownerId: client2.id,
     },
   })
@@ -170,7 +170,7 @@ The plugin should be well-documented and easy to maintain. Experience with WordP
       budget: '$1,500 - $2,500',
       timeline: '3-4 weeks',
       skills: ['PHP', 'WordPress', 'JavaScript', 'MySQL', 'Stripe API'],
-      status: 'OPEN',
+      status: 'COMPLETED',
       ownerId: client2.id,
     },
   })
@@ -193,7 +193,7 @@ Experience with AI/ML libraries and chatbot development is essential. Please inc
       budget: '$4,000 - $6,000',
       timeline: '6-8 weeks',
       skills: ['Python', 'TensorFlow', 'React', 'Node.js', 'OpenAI API'],
-      status: 'OPEN',
+      status: 'ON_HOLD',
       ownerId: client1.id,
     },
   })
@@ -316,6 +316,40 @@ David`,
   })
 
   console.log('Created applications:', { application1, application2, application3, application4 })
+
+  // Create sample reviews for completed gigs
+  const review1 = await prisma.review.create({
+    data: {
+      gigId: gig4.id, // WordPress Plugin Development (completed)
+      reviewerId: client2.id, // Mike Chen (client) reviewing developer
+      revieweeId: developer1.id, // Alex Rodriguez (developer)
+      rating: 5,
+      comment: 'Alex delivered an excellent WordPress plugin that exceeded our expectations. The code was clean, well-documented, and the plugin works flawlessly. Great communication throughout the project and delivered on time. Highly recommended!'
+    }
+  })
+
+  const review2 = await prisma.review.create({
+    data: {
+      gigId: gig4.id, // WordPress Plugin Development (completed)
+      reviewerId: developer1.id, // Alex Rodriguez (developer) reviewing client
+      revieweeId: client2.id, // Mike Chen (client)
+      rating: 4,
+      comment: 'Mike was a great client to work with. Clear requirements, responsive feedback, and fair payment terms. The project scope was well-defined and he was understanding when we needed to make adjustments. Would work with him again.'
+    }
+  })
+
+  // Update some applications to accepted status for more realistic data
+  await prisma.application.update({
+    where: { id: application1.id },
+    data: { status: 'ACCEPTED' }
+  })
+
+  await prisma.application.update({
+    where: { id: application4.id },
+    data: { status: 'ACCEPTED' }
+  })
+
+  console.log('Created reviews:', { review1, review2 })
 
   console.log('Seed completed successfully!')
   console.log('\nTest accounts created:')

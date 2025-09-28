@@ -135,12 +135,12 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="bg-white overflow-hidden shadow rounded-lg">
                   <div className="p-5">
                     <div className="flex items-center">
                       <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
+                        <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
                           <span className="text-white text-sm font-medium">
                             {gigs.filter(gig => gig.status === 'OPEN').length}
                           </span>
@@ -149,7 +149,7 @@ export default function Dashboard() {
                       <div className="ml-5 w-0 flex-1">
                         <dl>
                           <dt className="text-sm font-medium text-gray-500 truncate">
-                            Active Projects
+                            Open Projects
                           </dt>
                           <dd className="text-lg font-medium text-gray-900">
                             {gigs.filter(gig => gig.status === 'OPEN').length}
@@ -164,7 +164,31 @@ export default function Dashboard() {
                   <div className="p-5">
                     <div className="flex items-center">
                       <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
+                        <div className="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">
+                            {gigs.filter(gig => gig.status === 'IN_PROGRESS').length}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt className="text-sm font-medium text-gray-500 truncate">
+                            In Progress
+                          </dt>
+                          <dd className="text-lg font-medium text-gray-900">
+                            {gigs.filter(gig => gig.status === 'IN_PROGRESS').length}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white overflow-hidden shadow rounded-lg">
+                  <div className="p-5">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <div className="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
                           <span className="text-white text-sm font-medium">
                             {gigs.filter(gig => gig.status === 'COMPLETED').length}
                           </span>
@@ -173,7 +197,7 @@ export default function Dashboard() {
                       <div className="ml-5 w-0 flex-1">
                         <dl>
                           <dt className="text-sm font-medium text-gray-500 truncate">
-                            Completed Projects
+                            Completed
                           </dt>
                           <dd className="text-lg font-medium text-gray-900">
                             {gigs.filter(gig => gig.status === 'COMPLETED').length}
@@ -201,6 +225,105 @@ export default function Dashboard() {
                           </dt>
                           <dd className="text-lg font-medium text-gray-900">
                             {gigs.reduce((total, gig) => total + (gig.applications?.filter(app => app.status === 'PENDING').length || 0), 0)}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional Status Cards */}
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mt-5">
+                <div className="bg-white overflow-hidden shadow rounded-lg">
+                  <div className="p-5">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <div className="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">
+                            {gigs.filter(gig => gig.status === 'ON_HOLD').length}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt className="text-sm font-medium text-gray-500 truncate">
+                            On Hold
+                          </dt>
+                          <dd className="text-lg font-medium text-gray-900">
+                            {gigs.filter(gig => gig.status === 'ON_HOLD').length}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white overflow-hidden shadow rounded-lg">
+                  <div className="p-5">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <div className="w-8 h-8 bg-indigo-500 rounded-md flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">
+                            {gigs.filter(gig => gig.status === 'UNDER_REVIEW').length}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt className="text-sm font-medium text-gray-500 truncate">
+                            Under Review
+                          </dt>
+                          <dd className="text-lg font-medium text-gray-900">
+                            {gigs.filter(gig => gig.status === 'UNDER_REVIEW').length}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white overflow-hidden shadow rounded-lg">
+                  <div className="p-5">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <div className="w-8 h-8 bg-red-500 rounded-md flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">
+                            {gigs.filter(gig => gig.status === 'CANCELLED').length}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt className="text-sm font-medium text-gray-500 truncate">
+                            Cancelled
+                          </dt>
+                          <dd className="text-lg font-medium text-gray-900">
+                            {gigs.filter(gig => gig.status === 'CANCELLED').length}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white overflow-hidden shadow rounded-lg">
+                  <div className="p-5">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <div className="w-8 h-8 bg-gray-500 rounded-md flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">
+                            {gigs.filter(gig => gig.status === 'CLOSED').length}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt className="text-sm font-medium text-gray-500 truncate">
+                            Closed
+                          </dt>
+                          <dd className="text-lg font-medium text-gray-900">
+                            {gigs.filter(gig => gig.status === 'CLOSED').length}
                           </dd>
                         </dl>
                       </div>
@@ -238,14 +361,14 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="bg-white overflow-hidden shadow rounded-lg">
                   <div className="p-5">
                     <div className="flex items-center">
                       <div className="flex-shrink-0">
                         <div className="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
                           <span className="text-white text-sm font-medium">
-                            {gigs.filter(gig => gig.applications?.some(app => app.status === 'ACCEPTED')).length}
+                            {gigs.filter(gig => gig.applications?.some(app => app.status === 'ACCEPTED') && gig.status === 'IN_PROGRESS').length}
                           </span>
                         </div>
                       </div>
@@ -255,7 +378,7 @@ export default function Dashboard() {
                             Active Projects
                           </dt>
                           <dd className="text-lg font-medium text-gray-900">
-                            {gigs.filter(gig => gig.applications?.some(app => app.status === 'ACCEPTED')).length}
+                            {gigs.filter(gig => gig.applications?.some(app => app.status === 'ACCEPTED') && gig.status === 'IN_PROGRESS').length}
                           </dd>
                         </dl>
                       </div>
@@ -291,6 +414,30 @@ export default function Dashboard() {
                   <div className="p-5">
                     <div className="flex items-center">
                       <div className="flex-shrink-0">
+                        <div className="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">
+                            {gigs.filter(gig => gig.applications?.some(app => app.status === 'PENDING')).length}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt className="text-sm font-medium text-gray-500 truncate">
+                            Pending Applications
+                          </dt>
+                          <dd className="text-lg font-medium text-gray-900">
+                            {gigs.filter(gig => gig.applications?.some(app => app.status === 'PENDING')).length}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white overflow-hidden shadow rounded-lg">
+                  <div className="p-5">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
                         <div className="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
                           <span className="text-white text-sm font-medium">
                             {gigs.reduce((total, gig) => total + (gig.applications?.length || 0), 0)}
@@ -300,10 +447,109 @@ export default function Dashboard() {
                       <div className="ml-5 w-0 flex-1">
                         <dl>
                           <dt className="text-sm font-medium text-gray-500 truncate">
-                            Proposals Sent
+                            Total Proposals
                           </dt>
                           <dd className="text-lg font-medium text-gray-900">
                             {gigs.reduce((total, gig) => total + (gig.applications?.length || 0), 0)}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional Developer Stats */}
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mt-5">
+                <div className="bg-white overflow-hidden shadow rounded-lg">
+                  <div className="p-5">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <div className="w-8 h-8 bg-indigo-500 rounded-md flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">
+                            {gigs.filter(gig => gig.applications?.some(app => app.status === 'ACCEPTED') && gig.status === 'UNDER_REVIEW').length}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt className="text-sm font-medium text-gray-500 truncate">
+                            Under Review
+                          </dt>
+                          <dd className="text-lg font-medium text-gray-900">
+                            {gigs.filter(gig => gig.applications?.some(app => app.status === 'ACCEPTED') && gig.status === 'UNDER_REVIEW').length}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white overflow-hidden shadow rounded-lg">
+                  <div className="p-5">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <div className="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">
+                            {gigs.filter(gig => gig.applications?.some(app => app.status === 'ACCEPTED') && gig.status === 'ON_HOLD').length}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt className="text-sm font-medium text-gray-500 truncate">
+                            On Hold
+                          </dt>
+                          <dd className="text-lg font-medium text-gray-900">
+                            {gigs.filter(gig => gig.applications?.some(app => app.status === 'ACCEPTED') && gig.status === 'ON_HOLD').length}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white overflow-hidden shadow rounded-lg">
+                  <div className="p-5">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <div className="w-8 h-8 bg-red-500 rounded-md flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">
+                            {gigs.filter(gig => gig.applications?.some(app => app.status === 'REJECTED')).length}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt className="text-sm font-medium text-gray-500 truncate">
+                            Rejected
+                          </dt>
+                          <dd className="text-lg font-medium text-gray-900">
+                            {gigs.filter(gig => gig.applications?.some(app => app.status === 'REJECTED')).length}
+                          </dd>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white overflow-hidden shadow rounded-lg">
+                  <div className="p-5">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <div className="w-8 h-8 bg-gray-500 rounded-md flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">
+                            {gigs.filter(gig => gig.status === 'OPEN').length}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="ml-5 w-0 flex-1">
+                        <dl>
+                          <dt className="text-sm font-medium text-gray-500 truncate">
+                            Available Gigs
+                          </dt>
+                          <dd className="text-lg font-medium text-gray-900">
+                            {gigs.filter(gig => gig.status === 'OPEN').length}
                           </dd>
                         </dl>
                       </div>

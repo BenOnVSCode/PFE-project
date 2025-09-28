@@ -61,6 +61,8 @@ model User {
   verificationToken VerificationToken[]
   gigs        Gig[]        @relation("GigOwner")
   applications Application[] @relation("ApplicationAuthor")
+  reviewsGiven Review[] @relation("ReviewAuthor")
+  reviewsReceived Review[] @relation("ReviewRecipient")
 }
 
 model VerificationToken {
@@ -87,6 +89,7 @@ model Gig {
   ownerId String
   owner   User          @relation("GigOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   applications Application[]
+  reviews Review[]
 }
 
 model Application {
@@ -104,15 +107,42 @@ model Application {
   @@unique([gigId, authorId])
 }
 
+model Review {
+  id          String   @id @default(cuid())
+  rating      Int      // 1-5 stars
+  comment     String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // The gig being reviewed
+  gigId       String
+  gig         Gig      @relation(fields: [gigId], references: [id], onDelete: Cascade)
+  
+  // Who wrote the review
+  reviewerId  String
+  reviewer    User     @relation("ReviewAuthor", fields: [reviewerId], references: [id], onDelete: Cascade)
+  
+  // Who is being reviewed
+  revieweeId  String
+  reviewee    User     @relation("ReviewRecipient", fields: [revieweeId], references: [id], onDelete: Cascade)
+
+  @@unique([gigId, reviewerId]) // One review per gig per reviewer
+}
+
 enum UserRole {
   CLIENT
   DEVELOPER
 }
 
 enum GigStatus {
+  DRAFT
   OPEN
-  CLOSED
+  IN_PROGRESS
+  ON_HOLD
+  UNDER_REVIEW
   COMPLETED
+  CANCELLED
+  CLOSED
 }
 
 enum ApplicationStatus {
