@@ -25,6 +25,8 @@ interface Review {
   rating: number
   comment?: string
   createdAt: string
+  reviewerId: string
+  revieweeId: string
   reviewer: {
     id: string
     name?: string
