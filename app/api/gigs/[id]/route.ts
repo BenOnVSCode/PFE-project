@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { z } from 'zod'
+
+const updateGigSchema = z.object({
+  title: z.string().min(1, 'Title is required').optional(),
+  description: z.string().min(10, 'Description must be at least 10 characters').optional(),
+  budget: z.string().optional(),
+  timeline: z.string().optional(),
+  skills: z.array(z.string()).min(1, 'At least one skill is required').optional(),
+  status: z.enum(['DRAFT', 'OPEN', 'IN_PROGRESS', 'ON_HOLD', 'UNDER_REVIEW', 'COMPLETED', 'CANCELLED', 'CLOSED']).optional()
+})
 
 // GET /api/gigs/[id] - Get a specific gig
 export async function GET(
@@ -77,22 +87,19 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { title, description, budget, timeline, skills, status } = body
+    const validatedData = updateGigSchema.parse(body)
 
     const updatedGig = await prisma.gig.update({
       where: { id: params.id },
-      data: {
-        title,
-        description,
-        budget,
-        timeline,
-        skills,
-        status
-      }
+      data: validatedData
     })
 
     return NextResponse.json(updatedGig)
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ error: error.errors[0].message }, { status: 400 })
+    }
+
     console.error('Error updating gig:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }

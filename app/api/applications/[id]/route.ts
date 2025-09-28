@@ -43,7 +43,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Gig is no longer open' }, { status: 400 })
     }
 
-    // If accepting, reject all other applications and close the gig
+    // If accepting, reject all other applications and set gig to IN_PROGRESS
     if (status === 'ACCEPTED') {
       await prisma.$transaction([
         // Reject all other applications for this gig
@@ -59,10 +59,10 @@ export async function PUT(
           where: { id: params.id },
           data: { status: 'ACCEPTED' }
         }),
-        // Close the gig
+        // Set gig status to IN_PROGRESS
         prisma.gig.update({
           where: { id: application.gigId },
-          data: { status: 'CLOSED' }
+          data: { status: 'IN_PROGRESS' }
         })
       ])
     } else {

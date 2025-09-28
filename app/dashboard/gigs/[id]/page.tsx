@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
+import StatusManager from '@/components/StatusManager'
 
 interface Application {
   id: string
@@ -36,6 +37,7 @@ export default function GigDetails() {
   const [gig, setGig] = useState<Gig | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
 
   const fetchGig = useCallback(async () => {
     setIsLoading(true)
@@ -82,6 +84,30 @@ export default function GigDetails() {
       alert('Something went wrong')
     } finally {
       setIsUpdating(false)
+    }
+  }
+
+  const handleStatusChange = async (newStatus: string) => {
+    setIsUpdatingStatus(true)
+    try {
+      const response = await fetch(`/api/gigs/${params.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      })
+
+      if (response.ok) {
+        fetchGig() // Refresh the gig data
+      } else {
+        alert('Failed to update gig status')
+      }
+    } catch (error) {
+      console.error('Failed to update gig status:', error)
+      alert('Something went wrong')
+    } finally {
+      setIsUpdatingStatus(false)
     }
   }
 
@@ -154,14 +180,16 @@ export default function GigDetails() {
                 
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-lg font-medium text-gray-900">{gig.title}</h3>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      gig.status === 'OPEN' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {gig.status}
-                    </span>
+                    <h3 className="text-lg font-medium text-gray-900 mb-3">{gig.title}</h3>
+                    <div className="flex items-center space-x-3">
+                      <span className="text-sm font-medium text-gray-700">Status:</span>
+                      <StatusManager
+                        currentStatus={gig.status}
+                        gigId={gig.id}
+                        onStatusChange={handleStatusChange}
+                        isLoading={isUpdatingStatus}
+                      />
+                    </div>
                   </div>
 
                   <div>
