@@ -37,6 +37,10 @@ interface Review {
     name?: string
     image?: string
   }
+  gig: {
+    id: string
+    title: string
+  }
 }
 
 interface Gig {
